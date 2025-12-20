@@ -1,0 +1,46 @@
+{
+  "johndoe": [
+    {
+      "id": 1678456789000,
+      "name": "Annual Report 2023.pdf",
+      "type": "pdf",
+      "size": 2457600,
+      "lastModified": "2023-12-15T10:30:00.000Z",
+      "uploadDate": "2023-12-15T10:30:00.000Z"
+    },
+    {
+      "id": 1678456789001,
+      "name": "Project Proposal.docx",
+      "type": "docx",
+      "size": 1153433,
+      "lastModified": "2023-12-10T14:45:00.000Z",
+      "uploadDate": "2023-12-10T14:45:00.000Z"
+    },
+    {
+      "id": 1678456789002,
+      "name": "Financial Data.xlsx",
+      "type": "xlsx",
+      "size": 3774873,
+      "lastModified": "2023-12-05T09:15:00.000Z",
+      "uploadDate": "2023-12-05T09:15:00.000Z"
+    }
+  ],
+  "janesmith": [
+    {
+      "id": 1678456789003,
+      "name": "Company Logo.png",
+      "type": "png",
+      "size": 838860,
+      "lastModified": "2023-11-28T16:20:00.000Z",
+      "uploadDate": "2023-11-28T16:20:00.000Z"
+    },
+    {
+      "id": 1678456789004,
+      "name": "Marketing Presentation.pptx",
+      "type": "pptx",
+      "size": 5242880,
+      "lastModified": "2023-12-01T11:30:00.000Z",
+      "uploadDate": "2023-12-01T11:30:00.000Z"
+    }
+  ]
+}

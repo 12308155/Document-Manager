@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | DocuManager</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">
+                    <h1><i class="fas fa-file-alt"></i> DocuManager</h1>
+                </div>
+                <p>Enter your 6-digit access code to continue</p>
+            </div>
+            
+            <form id="accessForm" class="access-form">
+                <div class="form-group">
+                    <label for="accessCode">Access Code</label>
+                    <div class="code-input-container">
+                        <input type="text" id="accessCode" maxlength="6" placeholder="000000" autocomplete="off">
+                    </div>
+                    <div class="code-hint">
+                        <small>Enter the 6-digit code provided to you</small>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Access Documents</button>
+                
+                <div class="login-footer">
+                    <p>Don't have an access code? <a href="register.html">Create one</a></p>
+                    <p>Need to request access? <a href="#" id="requestCode">Request code</a></p>
+                </div>
+            </form>
+            
+            <div id="messageContainer" class="message-container"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('accessForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const accessCode = document.getElementById('accessCode').value;
+            const messageContainer = document.getElementById('messageContainer');
+            
+            // Clear previous messages
+            messageContainer.innerHTML = '';
+            
+            // Validation
+            if (accessCode.length !== 6 || !/^\d{6}$/.test(accessCode)) {
+                showMessage('Access code must be exactly 6 digits.', 'error');
+                return;
+            }
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('docuManagerUsers') || '[]');
+            
+            // Find user with matching access code
+            const user = users.find(u => u.accessCode === accessCode);
+            
+            if (user) {
+                // Update last login time
+                user.lastLogin = new Date().toISOString();
+                localStorage.setItem('docuManagerUsers', JSON.stringify(users));
+                
+                // Store user data in session storage
+                sessionStorage.setItem('authenticatedUser', JSON.stringify(user));
+                sessionStorage.setItem('authenticated', 'true');
+                
+                // Show success message and redirect
+                showMessage('Access granted! Redirecting to your documents...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else {
+                showMessage('Invalid access code. Please try again.', 'error');
+            }
+        });
+        
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            messageContainer.appendChild(alertDiv);
+            
+            // Remove message after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+        
+        // Request code functionality
+        document.getElementById('requestCode').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('To request an access code, please contact your administrator or register for a new account.');
+        });
+    </script>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2><i class="fas fa-file-alt"></i> DocuManager</h2>
+                    <p>Secure document management solution for businesses of all sizes. Organize, share, and protect your important files with confidence.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#documents">Documents</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h3>Follow Us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 DocuManager. All rights reserved. Made with <i class="fas fa-heart"></i> for secure document management.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,22 @@
+[
+  {
+    "fullName": "John Doe",
+    "email": "john.doe@example.com",
+    "username": "johndoe",
+    "accessCode": "123456",
+    "createdAt": "2023-12-20T10:30:00.000Z",
+    "lastLogin": "2023-12-20T14:45:00.000Z",
+    "bio": "Document management specialist with 5 years of experience in organizing and securing digital assets.",
+    "avatar": null
+  },
+  {
+    "fullName": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "username": "janesmith",
+    "accessCode": "654321",
+    "createdAt": "2023-11-15T09:15:00.000Z",
+    "lastLogin": "2023-12-20T12:20:00.000Z",
+    "bio": "IT professional focused on improving workflow efficiency through better document management practices.",
+    "avatar": null
+  }
+]

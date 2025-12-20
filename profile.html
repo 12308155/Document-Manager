@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | DocuManager</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <script>
+        // Check if user is authenticated
+        if (!sessionStorage.getItem('authenticated')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><i class="fas fa-file-alt"></i> DocuManager</h1>
+            </div>
+            <div class="header-content">
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#documents">Documents</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button id="profileBtn" class="btn btn-outline" onclick="window.location.href='profile.html'">Profile</button>
+                    <button id="logoutBtn" class="btn btn-outline" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Section -->
+    <section class="profile-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-user-circle"></i> User Profile</h2>
+                <p>Manage your account details and personal information</p>
+            </div>
+            
+            <div class="profile-container">
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar-container">
+                            <div class="profile-avatar" id="profileAvatar">
+                                <i class="fas fa-user fa-3x"></i>
+                            </div>
+                            <div class="avatar-upload">
+                                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                                <button class="btn btn-outline btn-small" id="uploadAvatarBtn">
+                                    <i class="fas fa-camera"></i> Change Photo
+                                </button>
+                            </div>
+                        </div>
+                        <h3 id="profileUsername">Loading...</h3>
+                        <p class="profile-role">Document Manager User</p>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Full Name</label>
+                                <div class="detail-value" id="detailFullName">-</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Username</label>
+                                <div class="detail-value" id="detailUsername">-</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Access Code</label>
+                                <div class="detail-value" id="detailAccessCode">-</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Email Address</label>
+                                <div class="detail-value" id="detailEmail">-</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Account Created</label>
+                                <div class="detail-value" id="detailCreatedAt">-</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Last Login</label>
+                                <div class="detail-value" id="detailLastLogin">-</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Total Documents</label>
+                                <div class="detail-value" id="detailDocCount">0</div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <label>Storage Used</label>
+                                <div class="detail-value" id="detailStorage">0 MB</div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item wide">
+                            <label>Bio</label>
+                            <div class="detail-value" id="detailBio">-</div>
+                        </div>
+                        
+                        <div class="detail-item wide">
+                            <label>Account Status</label>
+                            <div class="detail-value text-success">Active</div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button id="exportDataBtn" class="btn btn-primary" onclick="exportUserData()">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                        <button id="importDataBtn" class="btn btn-outline" onclick="importUserData()">
+                            <i class="fas fa-upload"></i> Import Data
+                        </button>
+                        <button id="editProfileBtn" class="btn btn-outline" onclick="toggleEditProfile()">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                        <button id="backToDocuments" class="btn btn-primary" onclick="window.location.href='index.html'">
+                            <i class="fas fa-arrow-left"></i> Back to Documents
+                        </button>
+                    </div>
+                    
+                    <div class="profile-note">
+                        <p><i class="fas fa-info-circle"></i> Export your data to save it permanently. Import it when you return to restore your accounts.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="demo-modal">
+        <div class="demo-modal-content">
+            <div class="demo-modal-header">
+                <h2>Edit Profile</h2>
+                <button class="close-demo">&times;</button>
+            </div>
+            <div class="demo-modal-body">
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label for="editFullName">Full Name</label>
+                        <input type="text" id="editFullName" class="form-control" placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editUsername">Username</label>
+                        <input type="text" id="editUsername" class="form-control" placeholder="Enter your username" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editEmail">Email Address</label>
+                        <input type="email" id="editEmail" class="form-control" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editBio">Bio</label>
+                        <textarea id="editBio" class="form-control" rows="3" placeholder="Tell us about yourself"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2><i class="fas fa-file-alt"></i> DocuManager</h2>
+                    <p>Secure document management solution for businesses of all sizes. Organize, share, and protect your important files with confidence.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#documents">Documents</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h3>Follow Us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 DocuManager. All rights reserved. Made with <i class="fas fa-heart"></i> for secure document management.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Handle logout functionality
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Update last login time
+                const users = JSON.parse(localStorage.getItem('docuManagerUsers') || '[]');
+                const currentUser = sessionStorage.getItem('authenticatedUser');
+                
+                if (currentUser) {
+                    const userData = JSON.parse(currentUser);
+                    const userIndex = users.findIndex(u => u.username === userData.username);
+                    if (userIndex !== -1) {
+                        users[userIndex].lastLogin = new Date().toISOString();
+                        localStorage.setItem('docuManagerUsers', JSON.stringify(users));
+                    }
+                }
+                
+                // Clear authentication data
+                sessionStorage.removeItem('authenticated');
+                sessionStorage.removeItem('authenticatedUser');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Export user data
+        function exportUserData() {
+            try {
+                const userData = localStorage.getItem('docuManagerUsers');
+                if (!userData) {
+                    alert('No user data found to export.');
+                    return;
+                }
+                
+                const blob = new Blob([userData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'documanager-users.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('User data exported successfully!');
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('Failed to export user data. Please try again.');
+            }
+        }
+
+        // Import user data
+        function importUserData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const userData = JSON.parse(event.target.result);
+                        if (Array.isArray(userData)) {
+                            localStorage.setItem('docuManagerUsers', JSON.stringify(userData));
+                            alert('User data imported successfully! Refresh the page to see changes.');
+                        } else {
+                            throw new Error('Invalid data format');
+                        }
+                    } catch (error) {
+                        console.error('Import error:', error);
+                        alert('Failed to import user data. Please check the file format.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // Toggle edit profile modal
+        function toggleEditProfile() {
+            document.getElementById('editProfileModal').style.display = 'flex';
+            loadEditFormData();
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        // Load data into edit form
+        function loadEditFormData() {
+            const userJson = sessionStorage.getItem('authenticatedUser');
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                document.getElementById('editFullName').value = user.fullName || '';
+                document.getElementById('editUsername').value = user.username || '';
+                document.getElementById('editEmail').value = user.email || '';
+                document.getElementById('editBio').value = user.bio || '';
+            }
+        }
+
+        // Save profile changes
+        function saveProfileChanges() {
+            const users = JSON.parse(localStorage.getItem('docuManagerUsers') || '[]');
+            const currentUser = sessionStorage.getItem('authenticatedUser');
+            
+            if (currentUser) {
+                const userData = JSON.parse(currentUser);
+                const userIndex = users.findIndex(u => u.username === userData.username);
+                
+                if (userIndex !== -1) {
+                    // Update user data
+                    users[userIndex].fullName = document.getElementById('editFullName').value;
+                    users[userIndex].email = document.getElementById('editEmail').value;
+                    users[userIndex].bio = document.getElementById('editBio').value;
+                    
+                    // Update session storage
+                    userData.fullName = document.getElementById('editFullName').value;
+                    userData.email = document.getElementById('editEmail').value;
+                    userData.bio = document.getElementById('editBio').value;
+                    sessionStorage.setItem('authenticatedUser', JSON.stringify(userData));
+                    
+                    // Save to localStorage
+                    localStorage.setItem('docuManagerUsers', JSON.stringify(users));
+                    
+                    // Reload profile
+                    loadUserProfile();
+                    
+                    // Close modal
+                    closeEditModal();
+                    
+                    alert('Profile updated successfully!');
+                }
+            }
+        }
+
+        // Handle avatar upload
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatarElement = document.getElementById('profileAvatar');
+                    avatarElement.innerHTML = `<img src="${e.target.result}" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                    
+                    // Save avatar to localStorage (in a real app, you'd want to handle this differently)
+                    const users = JSON.parse(localStorage.getItem('docuManagerUsers') || '[]');
+                    const currentUser = sessionStorage.getItem('authenticatedUser');
+                    
+                    if (currentUser) {
+                        const userData = JSON.parse(currentUser);
+                        const userIndex = users.findIndex(u => u.username === userData.username);
+                        if (userIndex !== -1) {
+                            users[userIndex].avatar = e.target.result;
+                            localStorage.setItem('docuManagerUsers', JSON.stringify(users));
+                        }
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Calculate accurate user document statistics
+        function calculateUserStats(username) {
+            // Get user's documents from localStorage
+            const userDocsKey = `documents_${username}`;
+            const userDocuments = JSON.parse(localStorage.getItem(userDocsKey) || '[]');
+            
+            // Calculate document count
+            const docCount = userDocuments.length;
+            
+            // Calculate total storage used
+            let totalSize = 0;
+            userDocuments.forEach(doc => {
+                totalSize += doc.size || 0;
+            });
+            
+            // Convert bytes to MB
+            const storageUsed = (totalSize / (1024 * 1024)).toFixed(2);
+            
+            return {
+                docCount: docCount,
+                storageUsed: storageUsed
+            };
+        }
+
+        // Load user profile data when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated
+            if (!sessionStorage.getItem('authenticated')) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Set up event listeners
+            document.getElementById('uploadAvatarBtn').addEventListener('click', function() {
+                document.getElementById('avatarInput').click();
+            });
+            
+            document.getElementById('avatarInput').addEventListener('change', handleAvatarUpload);
+            
+            document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveProfileChanges();
+            });
+            
+            document.querySelector('#editProfileModal .close-demo').addEventListener('click', closeEditModal);
+            
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('editProfileModal');
+                if (event.target === modal) {
+                    closeEditModal();
+                }
+            });
+            
+            // Load user profile data
+            loadUserProfile();
+        });
+
+        // Load user profile data
+        function loadUserProfile() {
+            try {
+                const userJson = sessionStorage.getItem('authenticatedUser');
+                if (!userJson) {
+                    throw new Error('No user data found');
+                }
+                
+                const user = JSON.parse(userJson);
+                
+                // Update profile elements
+                document.getElementById('profileUsername').textContent = user.username;
+                document.getElementById('detailFullName').textContent = user.fullName || 'Not set';
+                document.getElementById('detailUsername').textContent = user.username;
+                document.getElementById('detailAccessCode').textContent = user.accessCode || 'N/A';
+                document.getElementById('detailEmail').textContent = user.email || 'Not set';
+                document.getElementById('detailBio').textContent = user.bio || 'No bio available';
+                
+                // Display avatar if available
+                if (user.avatar) {
+                    const avatarElement = document.getElementById('profileAvatar');
+                    avatarElement.innerHTML = `<img src="${user.avatar}" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                }
+                
+                // Format and display creation date
+                if (user.createdAt) {
+                    const date = new Date(user.createdAt);
+                    document.getElementById('detailCreatedAt').textContent = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } else {
+                    document.getElementById('detailCreatedAt').textContent = 'N/A';
+                }
+                
+                // Format and display last login
+                if (user.lastLogin) {
+                    const date = new Date(user.lastLogin);
+                    document.getElementById('detailLastLogin').textContent = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } else {
+                    document.getElementById('detailLastLogin').textContent = 'First login';
+                }
+                
+                // Calculate and display accurate document statistics
+                const stats = calculateUserStats(user.username);
+                document.getElementById('detailDocCount').textContent = stats.docCount;
+                document.getElementById('detailStorage').textContent = stats.storageUsed + ' MB';
+                
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+                document.getElementById('profileUsername').textContent = 'Error loading profile';
+            }
+        }
+    </script>
+</body>
+</html>
